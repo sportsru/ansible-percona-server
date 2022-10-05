@@ -1,19 +1,22 @@
 ## percona-server
 
-[![Build Status](https://travis-ci.org/Oefenweb/ansible-percona-server.svg?branch=master)](https://travis-ci.org/Oefenweb/ansible-percona-server) [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-percona--server-blue.svg)](https://galaxy.ansible.com/Oefenweb/percona-server)
+[![CI](https://github.com/Oefenweb/ansible-percona-server/workflows/CI/badge.svg)](https://github.com/Oefenweb/ansible-percona-server/actions?query=workflow%3ACI)
+[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-percona--server-blue.svg)](https://galaxy.ansible.com/Oefenweb/percona_server)
 
 Set up a [percona-server](https://www.percona.com/software/mysql-database/percona-server) server in Debian-like systems.
 
 #### Requirements
 
-* `python-mysqldb` (will be installed)
+* `python-mysqldb(2|3)` (will be installed)
 * `tee` (will not be installed)
+* `software-properties-common` (will be installed)
+* `dirmngr` (will be installed)
 
 #### Variables
 
 ##### General
 
-* `percona_server_version`: [default: `5.6`]: Version to install (e.g. `5.6`)
+* `percona_server_version`: [default: `5.7`]: Version to install (e.g. `5.6`)
 * `percona_server_root_password`: [default: `+eswuw9uthUteFreyAqu`]: Root password **Make sure to change!**
 
 * `percona_server_install`: [`['xtrabackup']`]: Additional packages to install
@@ -23,6 +26,7 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 
 * `percona_server_user_root_cnf_manage`: [default: `true`]: Whether or not to manage `~root/.my.cnf`
 * `percona_server_user_root_cnf`: [default: `percona_server_user_root_cnf_preset`, see `defaults/main.yml`]: Root user configuration declarations
+* `percona_server_use_legacy_auth_method`: [default: `false`]: Use legacy authentication method **_(only Percona Server 8.0)_**
 
 ##### SSL
 
@@ -82,6 +86,10 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 * `percona_server_zoneinfo_tz_file`: [default: `''`]: The path of a single time zone file (e.g. `/usr/share/zoneinfo/Europe/Amsterdam`)
 * `percona_server_zoneinfo_tz_name`: [default: `''`]: A time zone name (e.g. `Europe/Amsterdam`)
 * `percona_server_zoneinfo_command`: [default: `mysql_tzinfo_to_sql {{ percona_server_zoneinfo_tz_dir }}`]: The zoneinfo command to generate SQL (e.g. `mysql_tzinfo_to_sql {{ percona_server_zoneinfo_tz_file }} {{ percona_server_zoneinfo_tz_name }}`, `mysql_tzinfo_to_sql --leap {{ {{ percona_server_zoneinfo_tz_file }} }}`)
+
+##### Toolkit UDFs
+
+* `percona_server_toolkit_udfs_manage`: [default: `true`]: Whether or not to install recommended hash functions ([see](https://www.percona.com/doc/percona-server/LATEST/management/udf_percona_toolkit.html))
 
 ## Dependencies
 
