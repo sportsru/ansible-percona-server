@@ -31,7 +31,7 @@ percona_server_dependencies:
   - "percona-server-server={{ percona_server_version_deb }}"
   - "percona-server-common={{ percona_server_version_deb }}"
   - "libperconaserverclient21={{ percona_server_version_deb }}"
-  - "percona-xtrabackup-80={{ percona_xtrabackup_version }}"
+  - "percona-xtrabackup-80={{ percona_xtrabackup_version }}.{{ ansible_distribution_release }}"
   - "python3-mysqldb"
 
 percona_server_etc_mysql_my_cnf: /etc/mysql/my.cnf
