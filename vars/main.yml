@@ -21,7 +21,7 @@ percona_server_debconf_selections:
     question: percona-server-server/root_password
     value: "{{ percona_server_root_password }}"
     vtype: password
-  - name: "percona-server-={{ percona_server_version_deb }}"
+  - name: "percona-server-server={{ percona_server_version_deb }}"
     question: percona-server-server/root_password_again
     value: "{{ percona_server_root_password }}"
     vtype: password
