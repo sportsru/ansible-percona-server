@@ -1,4 +1,4 @@
-# handlers file
+# handlers file for percona-server
 ---
 - name: restart percona-server
   service:

@@ -1,11 +1,5 @@
-# tasks file
+# tasks file for percona-server
 ---
-- include: version-support.yml
-  tags:
-    - configuration
-    - percona-server
-    - percona-server-version-support
-
 - include: first-run.yml
   tags:
     - configuration

@@ -1,4 +1,4 @@
-# tasks file
+# tasks file for percona-server
 ---
 - name: plugins | create (lock) directory
   file:

@@ -1,6 +1,7 @@
-# defaults file
+# defaults file for percona-server
 ---
-percona_server_version: 5.7
+percona_server_version: 8.0.29
+percona_allow_downgrade: false
 
 percona_server_root_password: '+eswuw9uthUteFreyAqu'
 
@@ -19,9 +20,10 @@ percona_server_user_root_cnf_preset:
       - name: password
         value: "'{{ percona_server_root_password }}'"
 percona_server_user_root_cnf: "{{ percona_server_user_root_cnf_preset }}"
+percona_server_user_hide_passwords: true
 
 percona_server_install:
-  - "percona-xtrabackup{{ '-80' if percona_server_version is version('8', '>=') else '-24' if percona_server_version is version('5.7', '>=') else '' }}"
+  - xtrabackup
 
 percona_server_ssl_map: {}
 

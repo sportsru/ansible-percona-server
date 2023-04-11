@@ -1,4 +1,4 @@
-# tasks file
+# tasks file for percona-server
 ---
 - name: databases | create
   mysql_db:

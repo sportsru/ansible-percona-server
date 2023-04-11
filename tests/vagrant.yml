@@ -1,10 +1,9 @@
-# test file
+# test file for percona-server
 ---
 - hosts: all
   remote_user: vagrant
   become: true
-  pre_tasks:
-    - name: include vars
-      include_vars: "{{ playbook_dir }}/vars/main.yml"
   roles:
     - ../../
+  vars:
+    percona_server_version: 5.7
