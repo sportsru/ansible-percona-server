@@ -1,7 +1,7 @@
 # tasks file for percona-server
 ---
 - name: users | create (default hosts)
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ item[0].name }}"
     password: "{{ item[0].password }}"
     priv: "{{ item[0].privs | join('/') }}"
@@ -16,7 +16,7 @@
     - percona-server-users-create-default-hosts
 
 - name: users | create (custom hosts)
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ item[0].name }}"
     password: "{{ item[0].password }}"
     priv: "{{ item[0].privs | join('/') }}"
@@ -31,7 +31,7 @@
     - percona-server-users-create-custom-hosts
 
 - name: users | drop (default hosts)
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ item[0].name }}"
     host: "{{ item[1] }}"
     state: absent
@@ -43,7 +43,7 @@
     - percona-server-users-drop-default-hosts
 
 - name: users | drop (custom hosts)
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ item[0].name }}"
     host: "{{ item[1] }}"
     state: absent

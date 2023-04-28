@@ -1,7 +1,7 @@
 # tasks file for percona-server
 ---
 - name: ib logfile | get datadir
-  mysql_variables:
+  community.mysql.mysql_variables:
     variable: datadir
   register: _datadir_value
   tags:
@@ -18,7 +18,7 @@
 # Instead of doing this in main.yml we do it here because of a bug in 2.2.0.0
 - block:
   - name: ib logfile | set InnoDB shutdown mode
-    mysql_variables:
+    community.mysql.mysql_variables:
       variable: innodb_fast_shutdown
       value: "1"
     tags:
