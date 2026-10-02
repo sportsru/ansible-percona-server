@@ -20,12 +20,26 @@
   tags:
     - percona-server-repository-public-key
 
+- name: repository | remove (other major versions)
+  apt_repository:
+    repo: "{{ item.1 }} {{ percona_server_repository_url }}/{{ item.0 }}/apt {{ ansible_lsb.codename }} main"
+    state: absent
+    update_cache: false
+  with_nested:
+    - "{{ percona_server_repository_names_absent }}"
+    - "{{ percona_server_repository_types }}"
+  when: percona_server_repository_remove_others | bool
+  tags:
+    - percona-server-repository-remove
+
 - name: repository | add
   apt_repository:
-    repo: "{{ item.type }} {{ item.url }} {{ item.component }}"
+    repo: "{{ item.1 }} {{ percona_server_repository_url }}/{{ item.0 }}/apt {{ ansible_lsb.codename }} main"
     state: present
     update_cache: true
-  with_items: "{{ percona_server_repositories }}"
+  with_nested:
+    - "{{ percona_server_repository_names }}"
+    - "{{ percona_server_repository_types }}"
   tags:
     - percona-server-repository-add
 

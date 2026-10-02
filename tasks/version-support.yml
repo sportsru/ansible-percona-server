@@ -2,7 +2,14 @@
 ---
 - name: version support | check
   fail:
-    msg: "Percona Server version {{ percona_server_version }} is not supported"
-  when: percona_server_version | string not in percona_server_versions_supported
+    msg: "Percona Server version {{ percona_server_version }} is not supported (supported major versions: {{ percona_server_versions_supported | join(', ') }})"
+  when: percona_server_version_major not in percona_server_versions_supported
   tags:
     - percona-server-version-support-check
+
+- name: version support | check xtrabackup
+  fail:
+    msg: "percona_xtrabackup_version ({{ percona_xtrabackup_version | default('undefined') }}) must be defined and match the major version of Percona Server ({{ percona_server_version_major }})"
+  when: percona_xtrabackup_version_major != percona_server_version_major
+  tags:
+    - percona-server-version-support-check-xtrabackup

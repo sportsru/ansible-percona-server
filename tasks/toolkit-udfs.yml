@@ -16,5 +16,18 @@
   args:
     creates: "{{ percona_server_lock_path }}/{{ item.soname }}"
   with_items: "{{ percona_server_toolkit_udfs }}"
+  when: percona_server_version_major == '8.0'
+  tags:
+    - percona-server-toolkit-udfs-install
+
+# 8.4 ships the same functions as a component; functions left over from 8.0 (their .so files are gone) are dropped first
+- name: toolkit udfs | install (component)
+  shell: >
+    mysql -NBe "SELECT 1 FROM mysql.component WHERE component_urn = '{{ percona_server_toolkit_udfs_component }}'" | grep -q 1
+    || mysql -e "{% for item in percona_server_toolkit_udfs %}DROP FUNCTION IF EXISTS {{ item.function }}; {% endfor %}INSTALL COMPONENT '{{ percona_server_toolkit_udfs_component }}'"
+    && touch {{ percona_server_lock_path }}/{{ percona_server_toolkit_udfs_component | basename }}
+  args:
+    creates: "{{ percona_server_lock_path }}/{{ percona_server_toolkit_udfs_component | basename }}"
+  when: percona_server_version_major is version('8.4', '>=')
   tags:
     - percona-server-toolkit-udfs-install

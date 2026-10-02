@@ -3,6 +3,28 @@
 percona_server_version: 8.0.29
 percona_allow_downgrade: false
 
+# Repositories (http://repo.percona.com/<name>/apt) per major version of percona_server_version
+percona_server_repository_url: http://repo.percona.com
+percona_server_repository_names_map:
+  '8.0':
+    - ps-80
+    - tools
+  '8.4':
+    - ps-84-lts
+    - pxb-84-lts
+    # percona-telemetry-agent (required by percona-server-server) is not in ps-84-lts
+    - telemetry
+    - tools
+percona_server_repository_remove_others: true
+
+# Client library soname changed within 8.4: libperconaserverclient22 up to 8.4.7, libperconaserverclient24 since 8.4.8
+percona_server_client_lib_package: >-
+  {{
+    'libperconaserverclient21' if percona_server_version_major == '8.0' else
+    'libperconaserverclient22' if percona_server_version_upstream is version('8.4.8', '<') else
+    'libperconaserverclient24'
+  }}
+
 percona_server_root_password: '+eswuw9uthUteFreyAqu'
 
 percona_server_use_legacy_auth_method: false

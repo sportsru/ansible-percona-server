@@ -20,6 +20,8 @@
   changed_when: false
   when:
     - percona_server_use_legacy_auth_method
+    # The question does not exist in 8.4 packages
+    - percona_server_version_major == '8.0'
   tags:
     - percona-server-install-configure-debconf
 
