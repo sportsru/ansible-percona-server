@@ -25,12 +25,46 @@
   tags:
     - percona-server-install-configure-debconf
 
+- name: install | check installed packages
+  command: >
+    dpkg-query -W -f='${Package}|${Status}|${Version}\n'
+    {{ (percona_server_hold_versions.keys() | list + percona_server_hold_packages_replaced) | join(' ') }}
+  register: _percona_server_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - percona-server-install-hold
+
+# apt can not change held packages, so unhold the ones whose version changes (or which are replaced)
+- name: install | unhold packages before changing them
+  dpkg_selections:
+    name: "{{ item.split('|')[0] }}"
+    selection: install
+  with_items: "{{ _percona_server_installed.stdout_lines }}"
+  when:
+    - item.split('|')[1].startswith('hold ')
+    - item.split('|')[1].endswith(' installed')
+    - >-
+      item.split('|')[0] in percona_server_hold_packages_replaced or
+      percona_server_hold_versions[item.split('|')[0]] | default('') != item.split('|')[2]
+  tags:
+    - percona-server-install-hold
+
 - name: install | dependencies
   apt:
     name: "{{ percona_server_dependencies }}"
     state: "{{ apt_install_state | default('present') }}"
   tags:
     - percona-server-install-dependencies
+
+- name: install | hold packages
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: "{{ 'hold' if percona_server_hold | bool else 'install' }}"
+  with_items: "{{ percona_server_hold_versions.keys() | list }}"
+  tags:
+    - percona-server-install-hold
 
 - name: install | additional
   apt:

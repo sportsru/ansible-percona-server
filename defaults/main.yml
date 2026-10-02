@@ -3,6 +3,11 @@
 percona_server_version: 8.0.29
 percona_allow_downgrade: false
 
+# Hold the packages installed with an exact version (server, client, common, client library, xtrabackup),
+# so that `apt upgrade` does not change them; they are unheld automatically when their version changes.
+# Set to false to unhold.
+percona_server_hold: true
+
 # Repositories (http://repo.percona.com/<name>/apt) per major version of percona_server_version
 percona_server_repository_url: http://repo.percona.com
 percona_server_repository_names_map:

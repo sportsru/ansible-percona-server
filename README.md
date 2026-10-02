@@ -20,6 +20,7 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 * `percona_server_repository_names_map`: [default: see `defaults/main.yml`]: Repositories (`<url>/<name>/apt`) per major version; adding a key adds a supported major version
 * `percona_server_repository_remove_others`: [default: `true`]: Whether or not to remove repositories of the other major versions (e.g. `ps-80` when installing `8.4`)
 * `percona_server_client_lib_package`: [default: `libperconaserverclient21` (8.0), `libperconaserverclient22` (8.4.0 - 8.4.7), `libperconaserverclient24` (8.4.8+)]: Client library package
+* `percona_server_hold`: [default: `true`]: Hold the packages installed with an exact version (server, client, common, client library, xtrabackup), so that `apt upgrade` does not change them; they are unheld automatically when their version changes
 * `percona_server_root_password`: [default: `+eswuw9uthUteFreyAqu`]: Root password **Make sure to change!**
 
 * `percona_server_install`: [`['xtrabackup']`]: Additional packages to install

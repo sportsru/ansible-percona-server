@@ -19,6 +19,28 @@ percona_server_repository_names_absent: "{{ percona_server_repository_names_map.
 
 percona_server_xtrabackup_package: "percona-xtrabackup-{{ percona_server_version_major | replace('.', '') }}"
 
+# Packages installed with an exact version (pkg=version) are held: {name: version}
+percona_server_hold_versions: >-
+  {{
+    dict(
+      percona_server_dependencies | select('search', '=') | map('regex_replace', '=.*$', '') | list
+      | zip(percona_server_dependencies | select('search', '=') | map('regex_replace', '^[^=]*=', '') | list)
+    )
+  }}
+# Packages replaced by the current ones, unheld so that apt can replace (remove) them:
+# xtrabackup of the other major versions (conflicts with the current one) and
+# client libraries with another soname (depend on percona-server-common of exactly their version)
+percona_server_client_lib_packages_known:
+  - libperconaserverclient21
+  - libperconaserverclient22
+  - libperconaserverclient24
+percona_server_hold_packages_replaced: >-
+  {{
+    (percona_server_versions_supported | map('replace', '.', '') | map('regex_replace', '^', 'percona-xtrabackup-') | list
+     + percona_server_client_lib_packages_known)
+    | difference([percona_server_xtrabackup_package, percona_server_client_lib_package])
+  }}
+
 percona_server_debconf_selections:
   - name: "percona-server-server={{ percona_server_version_deb }}"
     question: percona-server-server/root_password
