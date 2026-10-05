@@ -16,5 +16,33 @@
   args:
     creates: "{{ percona_server_lock_path }}/{{ item.soname }}"
   with_items: "{{ percona_server_toolkit_udfs }}"
+  when: percona_server_version_major == '8.0'
+  tags:
+    - percona-server-toolkit-udfs-install
+
+# 8.4 ships the same functions as a component; functions left over from 8.0 (their .so files are gone) are dropped first.
+# Each server (source or replica) installs it locally: sql_log_bin = 0 (no errant GTID on replicas), super_read_only
+# is switched off for these statements only and restored afterwards, also when they fail
+- name: toolkit udfs | install (component)
+  shell: |
+    set -u
+    if mysql -NBe "SELECT 1 FROM mysql.component WHERE component_urn = '{{ percona_server_toolkit_udfs_component }}'" | grep -q 1; then
+      touch {{ percona_server_lock_path }}/{{ percona_server_toolkit_udfs_component | basename }}
+      exit 0
+    fi
+    super_read_only=$(mysql -NBe 'SELECT @@global.super_read_only') || exit 1
+    rc=0
+    mysql -e "SET SESSION sql_log_bin = 0; SET GLOBAL super_read_only = OFF; {% for item in percona_server_toolkit_udfs %}DROP FUNCTION IF EXISTS {{ item.function }}; {% endfor %}INSTALL COMPONENT '{{ percona_server_toolkit_udfs_component }}'" || rc=$?
+    if [ "${super_read_only}" = "1" ]; then
+      mysql -e 'SET GLOBAL super_read_only = ON' || rc=1
+    fi
+    if [ "${rc}" -eq 0 ]; then
+      touch {{ percona_server_lock_path }}/{{ percona_server_toolkit_udfs_component | basename }}
+    fi
+    exit "${rc}"
+  args:
+    executable: /bin/bash
+    creates: "{{ percona_server_lock_path }}/{{ percona_server_toolkit_udfs_component | basename }}"
+  when: percona_server_version_major is version('8.4', '>=')
   tags:
     - percona-server-toolkit-udfs-install

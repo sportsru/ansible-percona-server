@@ -1,8 +1,9 @@
 # tasks file for percona-server
 ---
+# db:Status-Status is "installed" whatever the selection is ("install ok installed", "hold ok installed")
 - name: first-run | check
   shell: >
-    dpkg-query -W -f='${Status}' percona-server-server | grep -q 'install ok installed'
+    dpkg-query -W -f='${db:Status-Status}' percona-server-server | grep -qx 'installed'
   register: _mysqld_installed
   check_mode: no
   changed_when: false

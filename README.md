@@ -14,7 +14,14 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 
 ##### General
 
-* `percona_server_version`: [default: `5.6`]: Version to install (e.g. `5.6`)
+* `percona_server_version`: [default: `8.0.29`]: Full package version to install, without the distribution suffix (e.g. `8.0.39-30-1`, `8.4.6-6-1`). Its major version (`8.0`, `8.4`) selects repositories and packages
+* `percona_xtrabackup_version`: [required]: Full version of the xtrabackup package, must have the same major version as `percona_server_version` (e.g. `8.0.35-31-1`, `8.4.0-4-1`)
+* `percona_server_repository_url`: [default: `http://repo.percona.com`]: Base URL of the Percona repositories (e.g. a local mirror)
+* `percona_server_repository_names_map`: [default: see `defaults/main.yml`]: Repositories (`<url>/<name>/apt`) per major version; adding a key adds a supported major version
+* `percona_server_repository_remove_others`: [default: `true`]: Whether or not to remove repositories of the other major versions (e.g. `ps-80` when installing `8.4`)
+* `percona_server_repository_keyring` / `percona_server_repository_key_id`: [default: see `defaults/main.yml`]: Repositories are added as `deb [signed-by=<keyring>] <url>/<name>/apt <codename> main` (the same lines percona-release writes) and the key is added to the keyring; other lines of the same repositories (e.g. without signed-by) are removed first, they would make apt fail with "Conflicting values set for option Signed-By"
+* `percona_server_client_lib_package`: [default: `libperconaserverclient21` (8.0), `libperconaserverclient22` (8.4.0 - 8.4.7), `libperconaserverclient24` (8.4.8+)]: Client library package
+* `percona_server_hold`: [default: `true`]: Hold the packages installed with an exact version (server, client, common, client library, xtrabackup), so that `apt upgrade` does not change them; they are unheld automatically when their version changes
 * `percona_server_root_password`: [default: `+eswuw9uthUteFreyAqu`]: Root password **Make sure to change!**
 
 * `percona_server_install`: [`['xtrabackup']`]: Additional packages to install
@@ -24,7 +31,7 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 
 * `percona_server_user_root_cnf_manage`: [default: `true`]: Whether or not to manage `~root/.my.cnf`
 * `percona_server_user_root_cnf`: [default: `percona_server_user_root_cnf_preset`, see `defaults/main.yml`]: Root user configuration declarations
-* `percona_server_use_legacy_auth_method`: [default: `false`]: Use legacy authentication method **_(only Percona Server 8.0)_**
+* `percona_server_use_legacy_auth_method`: [default: `false`]: Use legacy authentication method (`mysql_native_password`). On 8.0 sets `default-authentication-plugin`, on 8.4 (where it was removed) sets `mysql_native_password = ON` and `authentication_policy = '*:mysql_native_password,,'`
 
 ##### SSL
 
@@ -87,7 +94,7 @@ Set up a [percona-server](https://www.percona.com/software/mysql-database/percon
 
 ##### Toolkit UDFs
 
-* `percona_server_toolkit_udfs_manage`: [default: `true`]: Whether or not to install recommended hash functions ([see](https://www.percona.com/doc/percona-server/LATEST/management/udf_percona_toolkit.html))
+* `percona_server_toolkit_udfs_manage`: [default: `true`]: Whether or not to install recommended hash functions ([see](https://www.percona.com/doc/percona-server/LATEST/management/udf_percona_toolkit.html)). On 8.4 they are installed as `component_percona_udf` (functions left over from 8.0 are dropped first)
 
 ## Dependencies
 

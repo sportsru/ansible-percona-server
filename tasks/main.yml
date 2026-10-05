@@ -1,5 +1,11 @@
 # tasks file for percona-server
 ---
+- import_tasks: version-support.yml
+  tags:
+    - configuration
+    - percona-server
+    - percona-server-version-support
+
 - import_tasks: first-run.yml
   tags:
     - configuration
