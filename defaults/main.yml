@@ -21,6 +21,9 @@ percona_server_repository_names_map:
     - telemetry
     - tools
 percona_server_repository_remove_others: true
+# Repositories are signed-by this keyring (the same as percona-release uses), the key is added to it
+percona_server_repository_keyring: /usr/share/keyrings/percona-keyring.gpg
+percona_server_repository_key_id: 9334A25F8507EFA5
 
 # Client library soname changed within 8.4: libperconaserverclient22 up to 8.4.7, libperconaserverclient24 since 8.4.8
 percona_server_client_lib_package: >-

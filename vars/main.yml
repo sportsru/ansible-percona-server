@@ -16,6 +16,8 @@ percona_server_repository_types:
 percona_server_repository_names: "{{ percona_server_repository_names_map[percona_server_version_major] }}"
 # Repositories of the other major versions (e.g. ps-80 after switching to 8.4)
 percona_server_repository_names_absent: "{{ percona_server_repository_names_map.values() | flatten | unique | difference(percona_server_repository_names) }}"
+_percona_server_repository_names_re: "{{ percona_server_repository_names | map('regex_escape') | join('|') }}"
+_percona_server_repository_names_absent_re: "{{ percona_server_repository_names_absent | map('regex_escape') | join('|') }}"
 
 percona_server_xtrabackup_package: "percona-xtrabackup-{{ percona_server_version_major | replace('.', '') }}"
 
